@@ -9,26 +9,37 @@ int main(int argc, char** argv)
   if(argc >= 2)
   {
     //read text file
-    //string path = "dna.txt";
     char* path = argv[1];                                                       //text file path name
-    char* readLine;                                                             //char* holding place when reading line
+    string readLine;                                                            //char* holding place when reading line
     ifstream read;
     read.open(path, ifstream::in);                                              //open file
-    read.getline(readLine, 256);                                                //read line into readLine
+    getline(read, readLine);                                                    //read line into readLine
     int lineCount = 0;                                                          //count keeps track of line number, for looping
-    char* lines = (char*) malloc(100000);
-    while(read.good())                                                          //read file until finished
+    string lines = "";
+
+    if(read.eof())
+      cout << "error" << endl;
+    while(!read.eof())                                                          //read file until finished
     {
-      lines += (readLine, '\n');                                                 //string holding all lines, delimeted by \n
-      cout << readLine << endl;
+      if(readLine.back() == '\r')
+        readLine.pop_back();                                                    //thanks jin, give him some extra credit :)
+      lines += readLine;                                                        //string holding all lines, delimeted by \n
       lineCount++;                                                              //increment line count
-      read.getline(readLine, 256);                                              //read next line
+      getline(read, readLine);                                                  //read next line
     }
     read.close();                                                               //close stream
+    DNA strand = DNA(lines);
     for(int i = 0; i < lineCount; i++)
     {
 
     }
-    return 0;
+    cout << "Length: " << strand.length() << endl;
+    cout << "Probablity of A: " << strand.probNucleotide('a') << endl;
+    cout << "Probablity of C: " << strand.probNucleotide('c') << endl;
+    cout << "Probablity of T: " << strand.probNucleotide('t') << endl;
+    cout << "Probablity of G: " << strand.probNucleotide('g') << endl;
+
   }
+  return 0;
+
 }

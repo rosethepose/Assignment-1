@@ -15,5 +15,5 @@ class DNA
     int length();
     double probNucleotide(char n);
     double probBigram(string b);
-
+    string print();
 };

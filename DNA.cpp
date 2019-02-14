@@ -62,3 +62,15 @@ double DNA::probBigram(string b)
       count++;                                                             //increment occurences
   return (double)count / length();                                         //prob = number of occurences / number of elements
 }
+string DNA::print()
+{
+  string s;
+  for(int i = 0; i < delimetedseq.length(); ++i)
+  {
+    if(delimetedseq[i] == ',')
+      s += "\n";
+    else
+      s += delimetedseq[i];
+  }
+  return s;
+}

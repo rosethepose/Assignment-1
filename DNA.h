@@ -4,7 +4,7 @@ class DNA
 {
   private:
     string sequence;
-
+    string delimetedseq;
   public:
     DNA();
     DNA(string seq);

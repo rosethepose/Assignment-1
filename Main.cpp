@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <time.h>
+#include <stdlib.h>
 #include "DNA.h"
 using namespace std;
 
@@ -68,6 +70,22 @@ int main(int argc, char** argv)
       out << "Standard Deviation: " << strand.deviation() << endl;
       out << "Variance: " << strand.variance() << endl;
       out << "Sum: " << strand.sum() << endl;
+      srand(time(0));
+      double a, b;
+      string s = "";
+      for(int i = 0; i < 1000; ++i)
+      {
+        a = (double)rand() / RAND_MAX;
+        b = (double)rand() / RAND_MAX;
+        s += strand.generate(a, b) + "\n";
+      }
+      out << s;
+      DNA strand2 = DNA(s);
+      out << "Probability of A: " << strand2.probNucleotide('a') << endl;
+      out << "Probability of C: " << strand2.probNucleotide('c') << endl;
+      out << "Probability of T: " << strand2.probNucleotide('t') << endl;
+      out << "Probability of G: " << strand2.probNucleotide('g') << endl;
+    
       cout << "Would you like to read another file? (Y/N) ";
       cin >> option;
       if(option == 'n' || option == 'N')

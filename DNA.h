@@ -16,4 +16,7 @@ class DNA
     double probNucleotide(char n);
     double probBigram(string b);
     string print();
+    double gaussian(double a, double b);
+    int calcLength(double a, double b);
+    string generate(double a, double b);
 };

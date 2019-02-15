@@ -2,6 +2,9 @@
 #include <ctype.h>
 #include <iostream>
 #include <cmath>
+#include <time.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "DNA.h"
 using namespace std;
 DNA::DNA() { }
@@ -73,4 +76,74 @@ string DNA::print()
       s += delimetedseq[i];
   }
   return s;
+}
+double DNA::gaussian(double a, double b)
+{
+  //C = sqrt(-2 ln (a)) * cos(2πb)
+  double g = sqrt(-2 * log(a) * cos(2*M_PI*b));
+  if(g < 0)
+    return g * -1;
+  return g;
+}
+int DNA::calcLength(double a, double b)
+{
+  return (deviation() * gaussian(a, b)) + mean();
+}
+string DNA::generate(double a, double b)
+{
+  string line = "";
+  double length = calcLength(a, b);
+  int numA = 0;
+  int numC = 0;
+  int numT = 0;
+  int numG = 0;
+  double probA = probNucleotide('a');
+  double probC = probNucleotide('c');
+  double probT = probNucleotide('t');
+  double probG = probNucleotide('g');
+  for(int i = 0; i < length; ++i)
+  {
+    int nucleotide = rand() % 4;
+    if(nucleotide == 0)
+    {
+      if(numA / length < probA)
+      {
+        line += "a";
+        numA++;
+      }
+      else
+        i--;
+    }
+    else if(nucleotide == 1)
+    {
+      if(numC / length < probC)
+      {
+        line += "c";
+        numC++;
+      }
+      else
+        i--;
+    }
+    else if(nucleotide == 2)
+    {
+      if(numT / length < probT)
+      {
+        line += "t";
+        numT++;
+      }
+      else
+        i--;
+    }
+    else if(nucleotide == 3)
+    {
+      if(numG / length < probG)
+      {
+        line += "g";
+        numG++;
+      }
+      else
+        i--;
+    }
+  }
+  return line;
 }

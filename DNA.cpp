@@ -25,7 +25,7 @@ double DNA::mean()
   for(int i = 0; i < delimetedseq.length(); ++i)                           //parse thru delimeted sequence, dummy
     if(delimetedseq[i] == ',')
       temp++;
-  return (double)length() / temp;
+  return (double)length() / temp;                                          //mean = number of elements / number of lines
 }
 double DNA::variance()
 {
@@ -43,7 +43,7 @@ double DNA::deviation()
     else                                                                   //count now stores the value of the length of a line
       sum += pow(count - m, 2);                                            //add the mean - length^2 to the sum
   }
-  return pow(sum / length(), .5);
+  return sqrt(sum / length());
 }
 int DNA::length()
 {
@@ -51,9 +51,10 @@ int DNA::length()
 }
 double DNA::probNucleotide(char n)
 {
+  toupper(n);
   int count = 0;                                                           //keeps track of occurrences of the nucleotide
   for(int i = 0; i < length(); ++i)
-    if(sequence[i] == n)
+    if(sequence[i] == n || toupper(sequence[i]) == toupper(n))
       count++;                                                             //increment occurences
   return (double)count / length();                                         //prob = number of occurences / number of elements
 }
@@ -61,7 +62,8 @@ double DNA::probBigram(string b)
 {
   int count = 0;                                                           //keep track of bigram occurences
   for(int i = 0; i < length()-1; i+=2)                                     //loop thru every other nuceleotide
-    if(sequence[i] == b[0] && sequence[i+1] == b[1])
+    if(sequence[i] == b[0] && sequence[i+1] == b[1]
+      || toupper(sequence[i]) == toupper(b[0]) && toupper(sequence[i+1]) == toupper(b[1]))
       count++;                                                             //increment occurences
   return (double)count / length();                                         //prob = number of occurences / number of elements
 }
@@ -70,7 +72,7 @@ string DNA::print()
   string s;
   for(int i = 0; i < delimetedseq.length(); ++i)
   {
-    if(delimetedseq[i] == ',')
+    if(delimetedseq[i] == ',')                                             //replace delimeters with new line
       s += "\n";
     else
       s += delimetedseq[i];
@@ -79,40 +81,39 @@ string DNA::print()
 }
 double DNA::gaussian(double a, double b)
 {
-  //C = sqrt(-2 ln (a)) * cos(2πb)
-  double g = sqrt(-2 * log(a) * cos(2*M_PI*b));
+  double g = sqrt(-2 * log(a) * cos(2*M_PI*b));                            //C = sqrt(-2 ln (a)) * cos(2πb)
   if(g < 0)
     return g * -1;
   return g;
 }
 int DNA::calcLength(double a, double b)
 {
-  return (deviation() * gaussian(a, b)) + mean();
+  return (deviation() * gaussian(a, b)) + mean();                          //D = deviation*gaussian / mean
 }
 string DNA::generate(double a, double b)
 {
   string line = "";
-  double length = calcLength(a, b);
-  int numA = 0;
+  double length = calcLength(a, b);                                        //calculate length only once
+  int numA = 0;                                                            //keep track of amnt of each nucleotide
   int numC = 0;
   int numT = 0;
   int numG = 0;
-  double probA = probNucleotide('a');
+  double probA = probNucleotide('a');                                      //keep track of probabilities, so I only have to calcuate once
   double probC = probNucleotide('c');
   double probT = probNucleotide('t');
   double probG = probNucleotide('g');
   for(int i = 0; i < length; ++i)
   {
-    int nucleotide = rand() % 4;
+    int nucleotide = rand() % 4;                                           //random number from 0-4
     if(nucleotide == 0)
     {
-      if(numA / length < probA)
+      if(numA / length < probA)                                            //check if probability is valid
       {
-        line += "a";
-        numA++;
+        line += "a";                                                       //add the nucleotide to the string
+        numA++;                                                            //increment the occurrence
       }
       else
-        i--;
+        i--;                                                               //go back an iteration and recalculate
     }
     else if(nucleotide == 1)
     {

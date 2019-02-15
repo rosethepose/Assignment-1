@@ -11,9 +11,9 @@ int main(int argc, char** argv)
   if(argc >= 2)
   {
     char option;
-    char* path = argv[1];                                                       //text file path name
-    ofstream out;
-    out.open("rose.out", ofstream::trunc);
+    char* path = argv[1];                                                         //text file path name
+    ofstream out;                                                                 //create the out stream
+    out.open("rose.out", ofstream::trunc);                                        //open the file, delete contents
     out << "Name: Rose Ramirez" << endl;
     out << "ID: 2317195" << endl;
     out << "Email: roramirez@chapman.edu" << endl;
@@ -21,14 +21,12 @@ int main(int argc, char** argv)
     {
       //read text file
       string readLine;                                                            //char* holding place when reading line
-      ifstream read;
+      ifstream read;                                                              //create the input stream
       read.open(path, ifstream::in);                                              //open file
       getline(read, readLine);                                                    //read line into readLine
       int lineCount = 0;                                                          //count keeps track of line number, for looping
       string lines = "";                                                          //lines will hold all nucleotide values
 
-      if(read.eof())
-        cout << "error" << endl;
       while(!read.eof())                                                          //read file until finished
       {
         if(readLine.back() == '\r')                                               //pop carriage returns from text file
@@ -40,16 +38,15 @@ int main(int argc, char** argv)
       read.close();                                                               //close stream
       DNA strand = DNA(lines);                                                    //initialize DNA strand
 
+      out << strand.print() << endl;                                              //print the contents of the strand
+      out << "Length: " << strand.length() << endl;                               //print the length of the strand
 
-      out << strand.print() << endl;
-      out << "Length: " << strand.length() << endl;
-
-      out << "Probability of A: " << strand.probNucleotide('a') << endl;
+      out << "Probability of A: " << strand.probNucleotide('a') << endl;          //probability of eac nucleotide
       out << "Probability of C: " << strand.probNucleotide('c') << endl;
       out << "Probability of T: " << strand.probNucleotide('t') << endl;
       out << "Probability of G: " << strand.probNucleotide('g') << endl;
 
-      out << "Probability of AA: " << strand.probBigram("aa") << endl;
+      out << "Probability of AA: " << strand.probBigram("aa") << endl;            //probability of each bigram
       out << "Probability of AC: " << strand.probBigram("ac") << endl;
       out << "Probability of AT: " << strand.probBigram("at") << endl;
       out << "Probability of AG: " << strand.probBigram("ag") << endl;
@@ -70,30 +67,30 @@ int main(int argc, char** argv)
       out << "Standard Deviation: " << strand.deviation() << endl;
       out << "Variance: " << strand.variance() << endl;
       out << "Sum: " << strand.sum() << endl;
-      srand(time(0));
-      double a, b;
-      string s = "";
+      srand(time(0));                                                             //seed random values
+      double a, b;                                                                //placeholders for random values
+      string s = "";                                                              //string to become the new strand
       for(int i = 0; i < 1000; ++i)
       {
-        a = (double)rand() / RAND_MAX;
+        a = (double)rand() / RAND_MAX;                                            //calcuate random numbers, 0 < rand / rand_max < 1
         b = (double)rand() / RAND_MAX;
-        s += strand.generate(a, b) + "\n";
+        s += strand.generate(a, b) + "\n";                                        //append to strand
       }
-      out << s;
-      DNA strand2 = DNA(s);
-      out << "Probability of A: " << strand2.probNucleotide('a') << endl;
+      DNA strand2 = DNA(s);                                                       //create the new DNA strand
+      out << strand2.print();                                                     //print thenew strand
+      out << "Probability of A: " << strand2.probNucleotide('a') << endl;         //calc new probabilities to compare
       out << "Probability of C: " << strand2.probNucleotide('c') << endl;
       out << "Probability of T: " << strand2.probNucleotide('t') << endl;
       out << "Probability of G: " << strand2.probNucleotide('g') << endl;
-    
-      cout << "Would you like to read another file? (Y/N) ";
+
+      cout << "Would you like to read another file? (Y/N) ";                      //option to read another file
       cin >> option;
-      if(option == 'n' || option == 'N')
+      if(option == 'n' || option == 'N')                                          //if no, exit and close out stream
       {
         out.close();
         return 0;
       }
-      if(option == 'Y' || option == 'y')
+      if(option == 'Y' || option == 'y')                                          //if user says yes, ask for file name
       {
         cout << "File Name: ";
         cin >> path;
@@ -101,5 +98,4 @@ int main(int argc, char** argv)
     } while(option != 'n' || option != 'N');
   }
   return 0;
-
 }
